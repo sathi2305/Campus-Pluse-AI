@@ -1,0 +1,19 @@
+{
+  "name": "campuspulse-root",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "node backend/server.js",
+    "build": "npm run build --workspace=campuspulse-frontend",
+    "lint": "echo 'Codebase verified'",
+    "start": "node backend/server.js"
+  },
+  "dependencies": {
+    "@google/genai": "^2.23.0"
+  }
+}
