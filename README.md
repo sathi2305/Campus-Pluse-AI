@@ -1,186 +1,608 @@
-# CampusPulse — AI-Powered Campus Issue Intelligence Platform
+<div align="center">
 
-> **Turn Campus Problems Into Campus Intelligence.**
+<img src="assets/hero.svg" alt="CampusPulse - AI-Powered Campus Issue Intelligence Platform" width="100%"/>
 
-CampusPulse transforms scattered student feedback into prioritized, actionable insights so institutions can identify problems faster, respond smarter, and build better campuses.
+<br/>
 
-**Not another complaint portal.** It's **Complaint Collection + AI Understanding + Duplicate Detection + Issue Clustering + Recurrence Detection + Explainable Prioritization + SLA Intelligence + Predictive Alerts + Campus Heatmap + AI Recommendations**
+<a href="https://campus-pluse-ai-phi.vercel.app/">
+  <img src="https://readme-typing-svg.demolab.com?font=Segoe+UI&weight=700&size=22&duration=3000&pause=900&color=22D3EE&center=true&vCenter=true&width=760&lines=What+should+we+fix+first%3F;Understand+%E2%80%A2+Prioritize+%E2%80%A2+Resolve;Turn+campus+problems+into+campus+intelligence" alt="Typing animation" />
+</a>
+
+<br/>
+
+[![Live Demo](https://img.shields.io/badge/%F0%9F%9A%80_Live_Demo-campus--pluse--ai--phi.vercel.app-22d3ee?style=for-the-badge&labelColor=0b1224)](https://campus-pluse-ai-phi.vercel.app/)
+[![Backend API](https://img.shields.io/badge/%E2%9A%99%EF%B8%8F_Backend_API-Vercel-8b5cf6?style=for-the-badge&labelColor=0b1224)](https://campus-pluse-ai-backend.vercel.app)
+[![License](https://img.shields.io/badge/License-MIT-10b981?style=for-the-badge&labelColor=0b1224)](#-license)
+
+![React](https://img.shields.io/badge/React_18-0b1224?style=flat-square&logo=react&logoColor=61dafb)
+![Vite](https://img.shields.io/badge/Vite-0b1224?style=flat-square&logo=vite&logoColor=a78bfa)
+![Tailwind](https://img.shields.io/badge/Tailwind_CSS-0b1224?style=flat-square&logo=tailwindcss&logoColor=38bdf8)
+![Node.js](https://img.shields.io/badge/Node.js-0b1224?style=flat-square&logo=nodedotjs&logoColor=6cc24a)
+![Express](https://img.shields.io/badge/Express-0b1224?style=flat-square&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-0b1224?style=flat-square&logo=mongodb&logoColor=47a248)
+![Socket.IO](https://img.shields.io/badge/Socket.IO-0b1224?style=flat-square&logo=socketdotio&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI_optional-0b1224?style=flat-square&logo=openai&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-0b1224?style=flat-square&logo=docker&logoColor=2496ed)
+
+<br/>
+
+**[Live Demo](https://campus-pluse-ai-phi.vercel.app/)** &nbsp;|&nbsp; **[Overview](#-overview)** &nbsp;|&nbsp; **[AI Pipeline](#-ai-pipeline)** &nbsp;|&nbsp; **[Architecture](#-architecture)** &nbsp;|&nbsp; **[Quick Start](#-quick-start)** &nbsp;|&nbsp; **[API](#-realtime-events)** &nbsp;|&nbsp; **[Roadmap](#-roadmap)**
+
+</div>
+
+<br/>
 
 ---
 
-## Problem Statement
-Students report issues via WhatsApp, email, paper notes — scattered, duplicated, no priority. Admins overwhelmed, critical issues like "No water in Hostel B" buried under low-priority requests. No visibility on recurring patterns, no SLA, no heatmap, no intelligence.
+<div align="center">
 
-## Solution
-CampusPulse centralizes reports and adds AI intelligence:
+## 🎯 Overview
 
-1. **Understand** complaint via NLP (local fallback + OpenAI)
-2. **Classify** into Water, Electricity, Wi-Fi, Hostel, Transport, Food, etc.
-3. **Analyze** severity, sentiment, affected users
-4. **Detect duplicates** via TF-IDF cosine + location/category/time similarity (thresholds >0.85 likely, 0.65-0.85 related)
-5. **Group** into clusters like *Hostel B Water Crisis — 47 reports, 630 affected, CRITICAL*
-6. **Detect recurring** patterns: Jan 4 Wi-Fi, Feb 8, Mar 13, Apr 21 → flag recurring
-7. **Calculate explainable priority**: `Priority = Severity×30 + Affected×25 + Recurrence×20 + Urgency×15 + Sentiment×10` normalized 0-100 with reasons
-8. **Recommend department** and auto-assign
-9. **Track SLA**: Critical 15m response/2h resolution, High 1h/8h, Medium 4h/24h, Low 24h/72h with warnings/breaches via Socket.IO
-10. **Notify** real-time, **visualize** heatmap via React Leaflet, **predict** spikes, **recommend actions**
+**Not another complaint portal.**
 
-Central question answered: **What campus problem should be solved first, why is it important, and what action should be taken?**
+CampusPulse turns scattered student feedback into prioritized, explainable, actionable insight, so institutions find problems faster, respond smarter, and build better campuses.
+
+It answers one question:
+
+### *What campus problem should be solved first, why does it matter, and what action should be taken?*
+
+<br/>
+
+| 😵 Before CampusPulse | ⚡ With CampusPulse |
+|:---|:---|
+| Issues arrive over WhatsApp, email, and paper notes | One central, multi-tenant platform |
+| 40 students report the same water outage separately | Duplicates detected and merged into one cluster |
+| Critical issues are buried under low-priority requests | Explainable priority score from 0 to 100 |
+| No SLA, no ownership, no accountability | SLA timers, auto-routing, live breach alerts |
+| Recurring problems are never noticed | Recurrence detection and predictive alerts |
+| Admins guess where to look | Live campus heatmap and AI recommendations |
+
+</div>
+
+<br/>
 
 ---
 
-## Features
+<div align="center">
 
-- Multi-tenant: Organization → Campus → Department → Users → Issues (tenant isolation on every doc)
-- Roles: STUDENT (report anonymously, vote, follow, confirm), FACULTY, DEPARTMENT_ADMIN, CAMPUS_ADMIN, SUPER_ADMIN
-- Issue wizard 8 steps: Title, Location (Leaflet map + building/block/floor/room), Category (AI suggest), Impact, Urgency, Evidence upload, Privacy (Public/Private/Anonymous), AI Preview (category, severity, urgency, affected, dept, duplicate prob, priority)
-- Status workflow: NEW → TRIAGED → ASSIGNED → IN_PROGRESS → WAITING → RESOLVED → CLOSED → REOPENED/REJECTED with visual timeline
-- Voting: 184 people affected, prevent duplicates, signal impact
-- Comments real-time via Socket.IO
-- Anonymous reporting privacy-respected
-- Priority Queue: "WHAT SHOULD WE FIX FIRST?" #1 Water outage Hostel B Priority 96 Affected 430 Recurrence High SLA 1h42m
-- Heatmap: intensity by count/severity/priority, filters, click hotspot → Building Issues, Critical, Affected, Top Category
-- Analytics: Recharts issues over time, by category/dept, resolution time, priority distribution, SLA performance, sentiment trends, recurring, health score
-- Trends: increasing/decreasing/stable/spikes with % (Internet +43% this week)
-- Predictive alerts: "Wi-Fi congestion expected Monday 9-11 AM" from historical pattern
-- AI Recommendations panel: Investigate pipeline, Evidence 47 reports 630 affected recurring 3 weeks negative sentiment, Action schedule inspection 2h
-- Campus Health Score 0-100 from unresolved, critical, SLA, resolution time, recurrence, sentiment, volume
-- Search & filtering: title, description, ID, building, category, dept + filters status/priority/category/dept/building/date/SLA/anonymous/recurring/duplicate + pagination
-- File uploads JPG PNG WEBP PDF validated MIME + size, Cloudinary or local
-- Real-time: Socket.IO events issue.created, issue.updated, issue.assigned, issue.statusChanged, issue.commentAdded, issue.resolved, notification.created, sla.warning, sla.breached
-- Audit log: creation, assignment, status, comments, merging, resolution, admin actions
+## 🧠 AI Pipeline
 
-## Tech Stack
+Every report passes through eight stages in seconds, with no manual triage.
 
-**Frontend**: React 18, Vite, Tailwind CSS, React Router, Axios, Lucide React, Framer Motion, Recharts, React Leaflet, Socket.IO Client, React Hook Form, Zod, Sonner
+<img src="assets/ai-pipeline.svg" alt="CampusPulse AI pipeline: understand, classify, analyze, deduplicate, cluster, recurrence, prioritize, route and SLA" width="100%"/>
 
-**Backend**: Node.js, Express.js, MongoDB, Mongoose, JWT, bcryptjs, Socket.IO, Multer, Helmet, CORS, express-rate-limit, Morgan/Winston, dotenv, Cloudinary, OpenAI
+</div>
 
-**AI**: Independent service layer `services/ai/` with OpenAI API + deterministic fallback keyword mapping (water/pipeline/tap → Water, wifi/internet/router → Internet, etc). Never hard-code keys. Display AI Mode: Local Intelligence vs Enhanced Intelligence.
+<br/>
 
-**Architecture**: Frontend ↓ REST API ↓ Express ↓ Controllers ↓ Services ↓ MongoDB + Socket.IO real-time + AI separate service layer + clean modular code.
+<div align="center">
 
-## Project Structure
+| Stage | What happens | Example |
+|:---:|:---|:---|
+| **Understand** | NLP reads the free-text complaint (OpenAI or local fallback) | *"Hostel Block B has no water since 6 AM"* |
+| **Classify** | Maps the issue to Water, Electricity, Wi-Fi, Hostel, Transport, Food, and more | Water + Hostel |
+| **Analyze** | Estimates severity, sentiment, and affected users | Severity 8, negative, about 200 students |
+| **Deduplicate** | TF-IDF cosine similarity plus location, category, and time match | above 0.85 likely duplicate, 0.65 to 0.85 related |
+| **Cluster** | Groups related reports into one problem | *Hostel B Water Crisis: 47 reports, 630 affected* |
+| **Recurrence** | Looks for repeat patterns across weeks | Wi-Fi: Jan 4, Feb 8, Mar 13, Apr 21 flagged |
+| **Prioritize** | Computes a transparent score with reasons | **94 / 100** |
+| **Route + SLA** | Assigns the right department and starts the clock | Hostel Maintenance, 2h resolution |
+
+</div>
+
+<br/>
+
+---
+
+<div align="center">
+
+## ✨ Features
+
+</div>
+
+<table align="center">
+<tr>
+<td width="50%" valign="top">
+
+### 🧩 Intelligence
+- AI complaint understanding with **Local** and **Enhanced** modes
+- Duplicate detection and issue clustering
+- Recurrence detection across weeks
+- Explainable priority scoring with reasons
+- Predictive alerts, for example *"Wi-Fi congestion expected Monday 9 to 11 AM"*
+- AI recommendations panel with evidence and next action
+- Campus Health Score from 0 to 100
+
+</td>
+<td width="50%" valign="top">
+
+### 🛠️ Operations
+- Priority Queue: **"What should we fix first?"**
+- SLA tracking with warning and breach states
+- Auto-assignment to the right department
+- Status workflow with a visual timeline
+- Voting, following, and resolution confirmation
+- Anonymous reporting with privacy controls
+- Full audit log of every admin action
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### 🗺️ Visibility
+- Interactive campus heatmap (React Leaflet)
+- Analytics: volume, category, department, resolution time, SLA performance, sentiment
+- Trend detection, for example *Internet +43% this week*
+- 8-step issue wizard with live AI preview
+- Evidence uploads (JPG, PNG, WEBP, PDF)
+
+</td>
+<td width="50%" valign="top">
+
+### 🏢 Platform
+- Multi-tenant: Organization, Campus, Department, Users, Issues
+- Roles: Student, Faculty, Department Admin, Campus Admin, Super Admin
+- Realtime updates through Socket.IO
+- JWT auth, RBAC, tenant isolation on every document
+- Docker Compose for a one-command local stack
+
+</td>
+</tr>
+</table>
+
+<br/>
+
+---
+
+<div align="center">
+
+## 🗺️ Campus Heatmap
+
+Each column is a campus zone. Height and color show issue intensity, and the pulsing rings mark live hotspots.
+
+<img src="assets/heatmap-3d.svg" alt="Isometric 3D campus heatmap with animated hotspots" width="85%"/>
+
+</div>
+
+<br/>
+
+---
+
+<div align="center">
+
+## 🏗️ Architecture
+
+<img src="assets/architecture.svg" alt="CampusPulse architecture: React client, Express API, service layer, MongoDB, Socket.IO realtime channel" width="100%"/>
+
+</div>
+
+<br/>
+
+### System flow
+
+```mermaid
+flowchart LR
+    subgraph Client["Client (Vercel)"]
+        UI["React 18 + Vite<br/>Tailwind, Framer Motion"]
+        MAP["React Leaflet<br/>Heatmap"]
+        CH["Recharts<br/>Analytics"]
+    end
+
+    subgraph API["Express API"]
+        MW["Helmet, CORS, rate limit<br/>JWT, RBAC, Zod"]
+        CTRL["Controllers"]
+    end
+
+    subgraph SVC["Service layer"]
+        AI["AI service<br/>OpenAI + local fallback"]
+        PRI["Priority engine"]
+        DUP["Duplicate + cluster"]
+        SLA["SLA engine"]
+        ANA["Analytics"]
+    end
+
+    DB[("MongoDB<br/>Mongoose")]
+    IO{{"Socket.IO"}}
+    OAI["OpenAI API"]
+    CLD["Cloudinary"]
+
+    UI --> MW --> CTRL --> SVC
+    MAP --> MW
+    CH --> MW
+    AI -.optional.-> OAI
+    CTRL -.uploads.-> CLD
+    SVC --> DB
+    CTRL --> IO
+    SLA --> IO
+    IO ==>|realtime events| UI
 ```
+
+### Request lifecycle
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor S as Student
+    participant FE as React App
+    participant API as Express API
+    participant AI as AI Service
+    participant DB as MongoDB
+    participant IO as Socket.IO
+    actor A as Dept Admin
+
+    S->>FE: "Hostel Block B has no water since 6 AM"
+    FE->>API: POST /api/issues
+    API->>AI: analyze(text)
+    AI-->>API: category, severity, sentiment, affected
+    API->>DB: find similar issues
+    DB-->>API: related reports
+    API->>API: cluster, recurrence, priority 94, SLA 2h
+    API->>DB: save issue + audit log
+    API->>IO: issue.created
+    IO-->>A: live notification
+    A->>API: status IN_PROGRESS
+    API->>IO: issue.statusChanged
+    IO-->>S: timeline updates in realtime
+    A->>API: upload resolution evidence
+    S->>API: confirm resolved
+    API->>DB: CLOSED + analytics refresh
+```
+
+### Layer responsibilities
+
+| Layer | Responsibility | Key tech |
+|:---|:---|:---|
+| **Presentation** | Wizard, dashboards, priority queue, heatmap, analytics | React 18, Vite, Tailwind, Framer Motion, Recharts, React Leaflet |
+| **API** | Routing, validation, auth, RBAC, rate limiting, error handling | Express, JWT, Zod, Helmet, express-rate-limit |
+| **Service** | Business logic kept separate from controllers | `services/ai`, `priority`, `duplicate`, `analytics`, `sla` |
+| **AI** | Independent layer with a deterministic keyword fallback, so the app works without an API key | OpenAI (optional), TF-IDF cosine |
+| **Data** | Tenant-scoped documents and audit trail | MongoDB, Mongoose |
+| **Realtime** | Push events to students and admins | Socket.IO |
+| **Storage** | Evidence uploads | Cloudinary, or local `/uploads` for demos |
+
+<br/>
+
+---
+
+<div align="center">
+
+## 📊 Explainable Priority Engine
+
+No black box. Every score comes with the reasons behind it.
+
+</div>
+
+```text
+Priority = Severity x 30 + Affected x 25 + Recurrence x 20 + Urgency x 15 + Sentiment x 10
+           (each factor normalized, final score scaled to 0 - 100)
+```
+
+<div align="center">
+
+| Rank | Issue | Priority | Affected | Recurrence | SLA left |
+|:---:|:---|:---:|:---:|:---:|:---:|
+| 🔴 1 | Water outage, Hostel B | **96** | 430 | High | 1h 42m |
+| 🟠 2 | Wi-Fi congestion, Library | **81** | 310 | Medium | 3h 10m |
+| 🟡 3 | Power fluctuation, Block C | **67** | 120 | Low | 6h 05m |
+
+*Sample data from the seeded demo.*
+
+### ⏱️ SLA Intelligence
+
+| Priority | First response | Resolution |
+|:---:|:---:|:---:|
+| 🔴 Critical | 15 minutes | 2 hours |
+| 🟠 High | 1 hour | 8 hours |
+| 🟡 Medium | 4 hours | 24 hours |
+| 🟢 Low | 24 hours | 72 hours |
+
+Warnings and breaches are pushed live through `sla.warning` and `sla.breached`.
+
+</div>
+
+<br/>
+
+---
+
+<div align="center">
+
+## 🔄 Issue Status Workflow
+
+</div>
+
+```mermaid
+stateDiagram-v2
+    [*] --> NEW
+    NEW --> TRIAGED
+    TRIAGED --> ASSIGNED
+    ASSIGNED --> IN_PROGRESS
+    IN_PROGRESS --> WAITING
+    WAITING --> IN_PROGRESS
+    IN_PROGRESS --> RESOLVED
+    RESOLVED --> CLOSED: student confirms
+    RESOLVED --> REOPENED: student disagrees
+    REOPENED --> ASSIGNED
+    TRIAGED --> REJECTED
+    CLOSED --> [*]
+    REJECTED --> [*]
+```
+
+<br/>
+
+---
+
+<div align="center">
+
+## 🧰 Tech Stack
+
+<img src="https://skillicons.dev/icons?i=react,vite,tailwind,js,nodejs,express,mongodb,docker,vercel,git&theme=dark" alt="Tech stack icons"/>
+
+</div>
+
+<br/>
+
+| | Technologies |
+|:---|:---|
+| **Frontend** | React 18, Vite, Tailwind CSS, React Router, Axios, Lucide React, Framer Motion, Recharts, React Leaflet, Socket.IO Client, React Hook Form, Zod, Sonner |
+| **Backend** | Node.js, Express.js, MongoDB, Mongoose, JWT, bcryptjs, Socket.IO, Multer, Helmet, CORS, express-rate-limit, Morgan, Winston, dotenv |
+| **AI** | OpenAI API (optional) with a deterministic local fallback, TF-IDF cosine similarity |
+| **Storage** | Cloudinary, or local uploads |
+| **DevOps** | Docker Compose, Vercel |
+
+<br/>
+
+---
+
+## 📁 Project Structure
+
+```text
 CampusPulse/
- frontend/ src/{components/{ui,common,issues,admin}, pages/{auth,issues,admin}, layouts, hooks, services, context, utils, routes, charts, App.jsx}
- backend/ src/{config, controllers, middleware, models, routes, services/{ai, priority, duplicate, analytics, sla}, sockets, utils, validators, seeds, app.js} server.js
- docs/ architecture.md api.md database.md deployment.md
- docker-compose.yml README.md .gitignore
+├── frontend/
+│   └── src/
+│       ├── components/   # ui, common, issues, admin
+│       ├── pages/        # auth, issues, admin
+│       ├── layouts/  hooks/  context/  routes/  charts/
+│       ├── services/     # API + socket clients
+│       └── App.jsx
+├── backend/
+│   └── src/
+│       ├── config/  controllers/  middleware/  models/  routes/
+│       ├── services/
+│       │   ├── ai/         # OpenAI + local fallback
+│       │   ├── priority/   # explainable scoring
+│       │   ├── duplicate/  # TF-IDF + clustering
+│       │   ├── analytics/
+│       │   └── sla/
+│       ├── sockets/  validators/  seeds/  utils/
+│       └── app.js
+├── docs/                   # architecture, api, database, deployment
+├── docker-compose.yml
+└── README.md
 ```
 
-## Installation
+<br/>
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18 or newer
+- MongoDB (local, or a free [Atlas](https://www.mongodb.com/atlas) cluster)
+
+### 1. Clone
 
 ```bash
-# Clone
-git clone <repo> && cd CampusPulse
+git clone https://github.com/sathi2305/Campus-Pluse-AI.git
+cd Campus-Pluse-AI
+```
 
-# Backend
+### 2. Backend
+
+```bash
 cd backend
-cp .env.example .env
-# Edit MONGO_URI, JWT_SECRET, CLIENT_URL, OPENAI_API_KEY (optional), CLOUDINARY
+cp .env.example .env      # then edit the values below
 npm install
-npm run seed   # creates demo accounts and 120+ issues
-npm run dev    # port 5000
+npm run seed              # demo accounts + 100+ realistic issues
+npm run dev               # http://localhost:5000
+```
 
-# Frontend
+### 3. Frontend
+
+```bash
 cd ../frontend
 cp .env.example .env
 npm install
-npm run dev    # port 5173
+npm run dev               # http://localhost:5173
 ```
 
-## Environment Variables
+### Or run everything with Docker
 
-Frontend `.env`:
-```
-VITE_API_URL=http://localhost:5000/api
-VITE_SOCKET_URL=http://localhost:5000
+```bash
+docker-compose up --build
 ```
 
-Backend `.env`:
-```
+<br/>
+
+### 🔐 Environment Variables
+
+<details>
+<summary><b>Backend <code>.env</code></b></summary>
+
+```env
 PORT=5000
 NODE_ENV=development
 MONGO_URI=mongodb://localhost:27017/campuspulse
 JWT_SECRET=your_super_secret
 JWT_EXPIRES_IN=7d
 CLIENT_URL=http://localhost:5173
-OPENAI_API_KEY=  # optional, fallback works without
+
+# Optional: the app works fully without these
+OPENAI_API_KEY=
 AI_MODEL=gpt-4o-mini
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
 ```
 
-## MongoDB Setup
-- Local: `mongod` + `mongodb://localhost:27017/campuspulse`
-- Atlas: Create cluster, whitelist IP, get URI
+</details>
 
-## AI Setup
-- Without key: Local deterministic intelligence keyword mapping works fully, UI shows "AI Mode: Local Intelligence"
-- With key: Set OPENAI_API_KEY, get Enhanced Intelligence classification, sentiment, summary
+<details>
+<summary><b>Frontend <code>.env</code></b></summary>
 
-## Cloudinary Setup (Optional)
-- Create account, get cloud name/key/secret, add to env. If not set, uploads stored locally in /uploads for demo.
-
-## Demo Credentials
-- Student: student@campuspulse.demo / Student@123
-- Campus Admin: admin@campuspulse.demo / Admin@123
-- Department Admin: department@campuspulse.demo / Department@123
-
-Seed script creates 3 campuses, 10 departments (IT, Hostel, Electrical, Maintenance, Transport, Food Services, Security, Academic, Library, Administration), 50 users, 100+ issues including duplicates (No water Hostel B vs Hostel Block B water supply stopped), recurring, critical, resolved, SLA breaches, comments, votes, notifications.
-
-## API Documentation
-See docs/api.md — full REST list + Socket.IO events.
-
-## Deployment
-See docs/deployment.md — Vercel frontend, Render/Railway backend, MongoDB Atlas, OpenAI, Cloudinary. Docker Compose provided for local full-stack.
-
-```bash
-docker-compose up --build
+```env
+VITE_API_URL=http://localhost:5000/api
+VITE_SOCKET_URL=http://localhost:5000
 ```
 
-## Testing Real-World Workflow
-Student reports: "Hostel Block B has no water since 6 AM."
-1. Receive report
-2. AI analyzes description
-3. Detect Water category
-4. Detect Hostel location
-5. Estimate severity 8
-6. Estimate affected 200
-7. Analyze sentiment negative
-8. Search previous issues
-9. Detect related reports
-10. Attach/create cluster Hostel B Water Crisis
-11. Calculate priority 94
-12. Explain priority reasons
-13. Identify Hostel Maintenance department
-14. Create SLA 2h resolution
-15. Notify administrator real-time
-16. Display in Priority Queue #1
-17. Display on Heatmap hotspot
-18. Notify dept admin
-19. Dept updates status → students real-time update
-20. Dept uploads resolution evidence
-21. Student confirms resolution → Closed
-22. Analytics update
-23. System checks recurring pattern
+</details>
 
-## Screenshots Section
-Add screenshots of Landing, Student Dashboard, Issue Wizard AI Preview, Issue Detail with priority explanation, Priority Queue, Heatmap, Analytics, AI Insights.
+<details>
+<summary><b>AI modes</b></summary>
 
-## Future Roadmap
-- Mobile app React Native
-- Push notifications FCM
-- Advanced ML embedding model for duplicate detection (sentence-transformers)
-- Auto-routing with staff availability
-- Voice reporting
-- Multilingual support
-- Integration with ERP
+| Mode | When | What you get |
+|:---|:---|:---|
+| **Local Intelligence** | No `OPENAI_API_KEY` | Deterministic keyword mapping (water, pipeline, tap to Water; wifi, internet, router to Internet) |
+| **Enhanced Intelligence** | `OPENAI_API_KEY` set | Richer classification, sentiment, and summaries |
 
-## Security
-JWT, bcrypt, Helmet, CORS, rate limiting, input validation Zod, sanitization mongoSanitize xss-clean, RBAC, tenant isolation, secure headers, file validation, centralized error handling, no secrets in code.
+The UI always shows which mode is active. Keys are never hard-coded.
 
-## License
-MIT — Built for college project, hackathon, startup MVP, portfolio, university deployment.
+</details>
+
+<details>
+<summary><b>Cloudinary (optional)</b></summary>
+
+Add your cloud name, key, and secret to the backend `.env`. If they are missing, evidence uploads are stored locally in `/uploads`, which is fine for demos.
+
+</details>
+
+<br/>
+
+### 🔑 Demo Credentials
+
+| Role | Email | Password |
+|:---|:---|:---|
+| Student | `student@campuspulse.demo` | `Student@123` |
+| Campus Admin | `admin@campuspulse.demo` | `Admin@123` |
+| Department Admin | `department@campuspulse.demo` | `Department@123` |
+
+The seed script creates 3 campuses, 10 departments, 50 users, and 100+ issues, including duplicates, recurring problems, critical cases, SLA breaches, comments, votes, and notifications.
+
+<br/>
+
+---
+
+<div align="center">
+
+## 📡 Realtime Events
+
+</div>
+
+| Event | Fired when |
+|:---|:---|
+| `issue.created` | A new issue is reported |
+| `issue.updated` | Issue details change |
+| `issue.assigned` | A department or staff member is assigned |
+| `issue.statusChanged` | Status moves along the workflow |
+| `issue.commentAdded` | Someone comments |
+| `issue.resolved` | A resolution is submitted |
+| `notification.created` | A user notification is generated |
+| `sla.warning` | An SLA deadline is close |
+| `sla.breached` | An SLA deadline is missed |
+
+Full REST reference: [`docs/api.md`](docs/api.md)
+
+<br/>
+
+---
+
+<div align="center">
+
+## 🛡️ Security
+
+</div>
+
+| | |
+|:---|:---|
+| 🔐 **Auth** | JWT with bcrypt-hashed passwords |
+| 👥 **Access** | Role-based access control and tenant isolation on every document |
+| 🧱 **Hardening** | Helmet, CORS, rate limiting, secure headers |
+| 🧼 **Input** | Zod validation, mongoSanitize, xss-clean |
+| 📎 **Uploads** | MIME type and size validation |
+| 🧯 **Errors** | Centralized handling, no secrets in code |
+
+<br/>
+
+---
+
+<div align="center">
+
+## ☁️ Deployment
+
+| Part | Where |
+|:---|:---|
+| **Frontend** | [Vercel](https://campus-pluse-ai-phi.vercel.app/) |
+| **Backend API** | [Vercel](https://campus-pluse-ai-backend.vercel.app) |
+| **Database** | MongoDB Atlas |
+| **AI / Media** | OpenAI and Cloudinary (both optional) |
+
+Step-by-step guide: [`docs/deployment.md`](docs/deployment.md)
+
+</div>
+
+<br/>
+
+---
+
+## 🗓️ Roadmap
+
+- [x] AI classification, severity, and sentiment
+- [x] Duplicate detection and clustering
+- [x] Explainable priority and SLA engine
+- [x] Realtime notifications
+- [x] Campus heatmap and analytics
+- [ ] Mobile app (React Native)
+- [ ] Push notifications (FCM)
+- [ ] Embedding model for duplicate detection (sentence-transformers)
+- [ ] Auto-routing based on staff availability
+- [ ] Voice reporting
+- [ ] Multilingual support
+- [ ] ERP integration
+
+<br/>
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome.
+
+1. Fork the repository
+2. Create a branch: `git checkout -b feature/your-feature`
+3. Commit your changes: `git commit -m "Add your feature"`
+4. Push the branch: `git push origin feature/your-feature`
+5. Open a pull request
+
+<br/>
+
+---
+
+## 📄 License
+
+Released under the **MIT License**. Built for college projects, hackathons, startup MVPs, portfolios, and university deployments.
+
+<br/>
+
+<div align="center">
+
+### Built by [Sathiyamoorthi S](https://github.com/sathi2305)
+
+If CampusPulse helped you, consider giving it a ⭐
+
+[![Live Demo](https://img.shields.io/badge/Try_it_live-22d3ee?style=for-the-badge&logo=vercel&logoColor=0b1224&labelColor=0b1224)](https://campus-pluse-ai-phi.vercel.app/)
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:22d3ee,50:818cf8,100:e879f9&height=120&section=footer" width="100%" alt="footer wave"/>
+
+</div>
